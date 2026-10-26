@@ -1,0 +1,25 @@
+# ==============================================================================
+# 🛡️ GITHUB CODEOWNERS
+# ==============================================================================
+# Define la propiedad del código y asigna automáticamente revisores obligatorios
+# a cada Pull Request antes de autorizar el merge.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# ==============================================================================
+
+# 🌐 Propietario por defecto para la totalidad del repositorio
+* @manager-dev
+
+# ⚙️ Flujos de CI/CD, Actions y gobernanza del proyecto
+/.github/ @manager-dev
+
+# 🐳 Definiciones de infraestructura y contenedores
+/Dockerfile @manager-dev
+/Containerfile @manager-dev
+/docker-compose.yml @manager-dev
+/compose.yaml @manager-dev
+
+# 🔐 Plantillas de entorno y configuración sensible
+/.env.example @manager-dev
+/application-local.yml.example @manager-dev
+/http-client.env.json @manager-dev
+/http-client.private.env.json.example @manager-dev
