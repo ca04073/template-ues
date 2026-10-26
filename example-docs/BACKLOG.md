@@ -16,7 +16,7 @@ Para actualizar el estado de un ítem, mueve el bloque completo a la sección co
 Usa la siguiente estructura para añadir nuevos ítems al backlog:
 
 ```markdown
-### [ID-000] Título Corto de la Tarea
+### [[ID-000]] Título Corto de la Tarea
 - **Tipo:** [Historia de Usuario | Tarea Técnica | Bug | Mejora]
 - **Estado:** ⏳ Por Hacer
 - **Estimación:** [X días | 0.5 días]
@@ -31,7 +31,7 @@ Usa la siguiente estructura para añadir nuevos ítems al backlog:
 ## 🔝 Prioridad Alta (Must Have)
 *Requerimientos críticos para el MVP o la versión actual.*
 
-### [ID-001] Inicialización y Configuración Base
+### [[ID-001]] Inicialización y Configuración Base
 - **Tipo:** Tarea Técnica
 - **Estado:** ⏳ Por Hacer
 - **Estimación:** 1 día
@@ -46,7 +46,7 @@ Usa la siguiente estructura para añadir nuevos ítems al backlog:
 ## 📈 Prioridad Media (Should Have)
 *Características importantes que aportan valor pero no detienen el lanzamiento.*
 
-### [ID-002] Ejemplo de Historia de Usuario
+### [[ID-002]] Ejemplo de Historia de Usuario
 - **Tipo:** Historia de Usuario
 - **Estado:** ⏳ Por Hacer
 - **Estimación:** 2.5 días
@@ -61,7 +61,7 @@ Usa la siguiente estructura para añadir nuevos ítems al backlog:
 ## 💤 Prioridad Baja (Could Have / Won't Have)
 *Mejoras secundarias, refactorizaciones estéticas o ideas para futuras versiones.*
 
-### [ID-003] Ejemplo de Optimización o Ajuste
+### [[ID-003]] Ejemplo de Optimización o Ajuste
 - **Tipo:** Mejora
 - **Estado:** ⏳ Por Hacer
 - **Estimación:** 0.5 días
@@ -72,3 +72,13 @@ Usa la siguiente estructura para añadir nuevos ítems al backlog:
 ## 📝 Historial de Decisiones
 *Espacio para anotar congelamientos de alcance, cambios de prioridad o notas de arquitectura.*
 - **2026-10-25:** Creación del backlog inicial a partir del template del repositorio con estimación en días.
+
+---
+
+## 🔗 Enlaces de Referencia (Trazabilidad)
+*Reemplaza `usuario` y `repositorio` para vincular tus tareas con GitHub Issues o ramas.*
+*Configurar una sola vez al crear el repositorio a partir del template.**Configurar una sola vez al crear el repositorio a partir del template.*
+
+[ID-001]: https://github.com
+[ID-002]: https://github.com
+[ID-003]: https://github.com
