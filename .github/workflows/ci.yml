@@ -1,5 +1,7 @@
-## Debe estar ubicado en .github/workflow/ci.minúsculas
-#
+# ====================================================================
+# 🚀 CI/CD PIPELINE & GHCR PUBLISH
+# Ubicación: .github/workflows/ci.yml
+# ====================================================================
 name: 🚀 CI/CD Pipeline & GHCR Publish
 
 on:
@@ -18,20 +20,26 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  # Fuerza el nombre del repositorio a minúsculas para evitar errores en GHCR si el usuario usa mayúsculas
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   lint-and-validate:
-    name: 🔍 Lint & Code Validation
+    name: 🔍 Lint, Security & Code Validation
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Requerido para que Gitleaks analice el historial
+
+      - name: 🛡️ Audit Secrets (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🛠️ Run linters / formatting checks
         run: |
-          echo "Validando sintaxis, linters y formato del código fuente..."
+          echo "Validando sintaxis, linters y formato de código fuente..."
 
   build-and-publish:
     name: 🐳 Build & Publish OCI Image
@@ -39,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # Requerido para publicar en GHCR
+      packages: write
 
     steps:
       - name: 📥 Checkout repository
@@ -53,9 +61,7 @@ jobs:
           flavor: |
             lower=true
           tags: |
-            # develop genera exclusivamente el tag :staging
             type=raw,value=staging,enable=${{ github.ref == 'refs/heads/develop' }}
-            # main genera exclusivamente el tag :latest y el hash corto de git para trazabilidad
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=sha,format=short,enable=${{ github.ref == 'refs/heads/main' }}
 
@@ -65,7 +71,6 @@ jobs:
       - name: 🔧 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Inicia sesión en GHCR solo en eventos de push (ramas base), nunca en Pull Requests
       - name: 🔐 Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
@@ -84,4 +89,3 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-

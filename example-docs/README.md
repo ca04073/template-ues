@@ -1,5 +1,5 @@
 ---
-proyecto: "[NOMBRE_DEL_PROYECTO]"
+proyecto: "{{PROJECT_NAME}}"
 tipo: "Plantilla Base / Repositorio Modelo"
 entorno_principal: "Podman / OCI Containers"
 arquitectura: "Separación Modular / Staging -> Main"
@@ -14,7 +14,7 @@ tags:
   - podman
 ---
 
-# 🚀 [NOMBRE_DEL_PROYECTO]
+# 🚀 {{PROJECT_NAME}}
 
 > [!NOTE]
 > **REPOSITORIO PLANTILLA (TEMPLATE):**  
@@ -34,7 +34,7 @@ tags:
 
 ## ⚡ 1. Resumen del Sistema
 
-[Breve descripción de 2 a 3 líneas sobre el objetivo del proyecto, el problema que resuelve y el valor que aporta].
+{{PROJECT_DESCRIPTION}}
 
 Principios del entorno:
 1. **Contenedorización Agnóstica:** Listo para compilar y ejecutarse sin fricción con **Podman** o **Docker** mediante definiciones estándar OCI.
@@ -79,7 +79,7 @@ Principios del entorno:
 
 ## 📂 4. Árbol Estructural del Repositorio
 
-Usa el código con precaución.
+```text
 .
 ├── .devcontainer/
 │   └── devcontainer.json         # Configuración del entorno de desarrollo aislado
@@ -99,6 +99,7 @@ Usa el código con precaución.
 ├── compose.yaml                  # Orquestación multicontenedor (compatible con Podman)
 ├── Dockerfile                    # Receta de construcción OCI del contenedor
 └── README.md                     # Documentación general del proyecto
+```
 
 ---
 
@@ -114,8 +115,8 @@ Usa el código con precaución.
 1. Clonar el repositorio y entrar en la carpeta del proyecto:
     
     ```bash
-    git clone https://github.com[USUARIO]/[REPOSITORIO].git
-    cd [REPOSITORIO]
+    git clone https://github.com/{{GITHUB_OWNER}}/{{PROJECT_NAME}}.git
+    cd {{PROJECT_NAME}}
     ```
     
 2. Preparar el archivo de variables de entorno:
@@ -129,7 +130,7 @@ Usa el código con precaución.
 Compilar la imagen localmente:
 
 ```bash
-podman build -t [NOMBRE_DEL_PROYECTO]:local .
+podman build -t {{PROJECT_NAME}}:local .
 ```
 
 Levantar el entorno con compose:
@@ -149,16 +150,11 @@ Para utilizar directamente los artefactos generados por el pipeline de integraci
 
 ```bash
 # Versión de staging (rama develop)
-podman pull ghcr.io/[USUARIO]/[REPOSITORIO]:staging
+podman pull ghcr.io/{{GITHUB_OWNER}}/{{PROJECT_NAME}}:staging
 
 # Versión de producción (rama main)
-podman pull ghcr.io/[USUARIO]/[REPOSITORIO]:latest
+podman pull ghcr.io/{{GITHUB_OWNER}}/{{PROJECT_NAME}}:latest
 ```
 
-> ### **Mantenimiento y Autoría:**
-> 
-> **Responsable:** [Tu Nombre / Usuario]
-> 
-> **Contacto:** [Tu Correo o Perfil de GitHub]
-> 
-> **Organización / Proyecto:** [Nombre de tu Entorno / Proyecto]
+---
+> **Mantenimiento y Autoría:** @{{GITHUB_OWNER}}
