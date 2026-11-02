@@ -84,12 +84,28 @@ else
   echo -e "  ${YELLOW}Directorio .githooks no encontrado; se omitió la vinculación.${NC}"
 fi
 
-# 3. Autodestrucción del script de inicialización
+# 3. Limpieza de archivos de andamiaje (scaffolding)
+if [ -f "SETUP.md" ]; then
+  rm -f SETUP.md
+  echo -e "  ${GREEN}✓${NC} SETUP.md eliminado (documentación operativa consolidada en README.md)"
+fi
+
+# 4. Mensaje de cierre e instrucciones de protección
 echo -e "\n${BLUE}${BOLD}=====================================================${NC}"
-echo -e "${GREEN}${BOLD}Inicializacion completada exitosamente.${NC}"
+echo -e "${GREEN}${BOLD}   ✅ INICIALIZACIÓN COMPLETADA CON ÉXITO           ${NC}"
 echo -e "${BLUE}${BOLD}=====================================================${NC}\n"
 
+echo -e "${BOLD}🛡️  Protección de la rama 'main':${NC}"
+echo -e "  El ruleset de protección ya está incluido en el repositorio:"
+echo -e "  ${YELLOW}.github/rulesets/main-protection.json${NC}\n"
+echo -e "  Para activarlo en GitHub:"
+echo -e "  1. Ve a ${BOLD}Settings > Rules > Rulesets${NC} en este nuevo repositorio."
+echo -e "  2. Haz clic en la flecha de ${BOLD}New ruleset > Import a ruleset${NC}."
+echo -e "  3. Selecciona el archivo ${BOLD}.github/rulesets/main-protection.json${NC}."
+echo -e "  4. Verifica que el estado sea ${GREEN}Active${NC} y presiona ${BOLD}Save changes${NC}.\n"
+
+echo -e "${BLUE}-----------------------------------------------------${NC}"
 rm -- "$0"
-echo "🗑️ Script init.sh eliminado tras inicialización exitosa."
+echo -e "🗑️  Script init.sh eliminado tras inicialización exitosa.\n"
 
 exit 0
