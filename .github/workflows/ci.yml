@@ -59,7 +59,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
-            lower=true
+            latest=true
           tags: |
             type=raw,value=staging,enable=${{ github.ref == 'refs/heads/develop' }}
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}

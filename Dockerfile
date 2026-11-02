@@ -14,7 +14,8 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # Puerto expuesto parametrizado
-EXPOSE {{CONTAINER_PORT}}
+ARG CONTAINER_PORT=8080
+EXPOSE ${CONTAINER_PORT}
 
 # Punto de entrada por defecto
 CMD ["sh"]
