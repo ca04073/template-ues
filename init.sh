@@ -57,11 +57,18 @@ TARGET_FILES=(
 # Sustitución de marcadores en archivos existentes
 for file in "${TARGET_FILES[@]}"; do
   if [ -f "$file" ]; then
+    # Marcadores estándar
     sedi "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" "$file"
     sedi "s|{{PROJECT_DESCRIPTION}}|$PROJECT_DESCRIPTION|g" "$file"
     sedi "s|{{GITHUB_OWNER}}|$GITHUB_OWNER|g" "$file"
     sedi "s|{{CONTAINER_PORT}}|$CONTAINER_PORT|g" "$file"
     sedi "s|{{HOST_PORT}}|$HOST_PORT|g" "$file"
+
+    # Reemplazo seguro para ARG CONTAINER_PORT=<valor> en Dockerfile
+    if [[ "$file" == "Dockerfile" || "$file" == "Containerfile" ]]; then
+      sedi -E "s|ARG CONTAINER_PORT=[0-9]+|ARG CONTAINER_PORT=${CONTAINER_PORT}|g" "$file"
+    fi
+
     echo -e "  ${GREEN}✓${NC} $file actualizado"
   fi
 done
