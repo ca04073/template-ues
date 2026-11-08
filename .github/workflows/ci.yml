@@ -31,7 +31,12 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      # Aquí van tus validaciones o linters locales
+      - name: 🧪 Run base repository validation
+        run: |
+          echo "Ejecutando verificaciones sintácticas y de consistencia base..."
+          test -f compose.yaml || { echo "ERROR: compose.yaml no encontrado"; exit 1; }
+          (test -f Dockerfile || test -f Containerfile) || { echo "ERROR: No se encontró Dockerfile o Containerfile"; exit 1; }
+          echo "✅ Archivos estructurales verificados correctamente."
 
   build-and-publish:
     name: 🐳 Build & Publish OCI Image
@@ -50,14 +55,17 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            # 1. Rama develop -> imagen de staging para pruebas
+            # 1. Pull Requests -> Tag efímero local para validar la compilación
+            type=ref,event=pr,prefix=pr-
+
+            # 2. Rama develop -> Imagen de staging para pruebas e integración
             type=raw,value=staging,enable=${{ github.ref == 'refs/heads/develop' }}
             type=sha,prefix=dev-,enable=${{ github.ref == 'refs/heads/develop' }}
 
-            # 2. Rama main -> versión productiva general
+            # 3. Rama main -> Versión productiva general
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
-            # 3. Tags Git (SemVer) -> versiones formales de release
+            # 4. Tags Git (SemVer) -> Versiones formales de release
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}

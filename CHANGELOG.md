@@ -16,19 +16,19 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 *Cambios confirmados y mezclados en la rama principal que aún no se han incluido en una versión/tag oficial.*
 
 ### Added
-- [ ] [ID-002] Nueva funcionalidad en desarrollo pendiente de liberar.
+- [ID-002] Estructura base de endpoints y controladores de la aplicación.
 
 ### Fixed
-- [ ] [ID-004] Corrección de error menor en la interfaz de usuario.
+- [ID-004] Manejo de señales de terminación del contenedor para apagado limpio (*graceful shutdown*).
 
 ---
 
-## - 2026-10-25
-*Primera versión estable del proyecto.*
+## [0.1.0] - 2026-10-25
+*Línea base generada a partir de la plantilla.*
 
 ### Added
-- [ID-001] Inicialización del proyecto y configuración de la arquitectura base.
-- Documentación inicial incluyendo los archivos `README.md`, `BACKLOG.md` y `CHANGELOG.md`.
+- [ID-001] Inicialización del proyecto, arquitectura base, compose y pipeline de CI.
+- Documentación inicial (`README.md`, `BACKLOG.md`, `CHANGELOG.md`).
 
 ---
 
@@ -51,9 +51,8 @@ Cuando liberes una nueva versión, copia este bloque debajo de `## [Unreleased]`
 
 ---
 
-## 🔗 Enlaces de Comparación (Configuración de GitHub)
-*Reemplaza `usuario` y `repositorio` por los datos reales de tu proyecto para activar los enlaces.*
-*Configurar una sola vez al crear el repositorio a partir del template.*
+## 🔗 Enlaces de Comparación
+*Generados automáticamente a partir del template.*
 
-[Unreleased]: https://github.com
-: https://github.com
+[Unreleased]: https://github.com/{{GITHUB_REPOSITORY}}/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/{{GITHUB_REPOSITORY}}/releases/tag/v0.1.0

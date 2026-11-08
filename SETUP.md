@@ -9,7 +9,7 @@ Este documento describe el procedimiento paso a paso para inicializar y personal
 ## 📋 Requisitos Previos
 
 1. **Git** configurado en tu máquina local.
-2. Acceso SSH validado contra GitHub (`ssh -T git@github.com` o el alias correspondiente como `github-ues`).
+2. Acceso SSH validado contra GitHub (`ssh -T git@github.com` o tu alias SSH correspondiente como `github-ues`).
 3. Motor de contenedores activo (**Docker Engine / Podman**).
 
 ---
@@ -19,13 +19,13 @@ Este documento describe el procedimiento paso a paso para inicializar y personal
 Clona el nuevo repositorio generado desde la plantilla e ingresa a su directorio raíz:
 
 ```bash
-git clone git@github-ues:<tu-usuario>/<tu-nuevo-repo>.git
+git clone git@github.com:<tu-usuario>/<tu-nuevo-repo>.git
 cd <tu-nuevo-repo>
 ```
 
 > Asegúrate de estar posicionado sobre la rama de trabajo predeterminada (`develop`):
 > ```bash
-> git checkout develop
+> git switch develop
 > ```
 
 ---
@@ -43,16 +43,16 @@ chmod +x init.sh
 
 | Parámetro | Formato requerido | Ejemplo | Propósito |
 | :--- | :--- | :--- | :--- |
-| **Nombre del Proyecto** | `kebab-case` (minúsculas y guiones) | `encomiendas-envio-seguro` | Nombres de servicios en `compose.yaml`, tag de imagen OCI y directorio. |
-| **Descripción** | Texto legible libre | `Sistema de gestión de encomiendas y envíos seguros` | Documentación en `README.md`. |
-| **GitHub Owner** | Nombre de usuario u org (sin `@`) | `ca04073` | Configuración de GHCR y `CODEOWNERS`. |
-| **Puerto del Contenedor** | Entero numérico | `8080` | `EXPOSE` y `ARG CONTAINER_PORT` en `Dockerfile`. |
-| **Puerto del Host Local** | Entero numérico | `8080` | Mapeo de puertos en `compose.yaml`. |
+| **Nombre del Proyecto** | `kebab-case` (minúsculas y guiones) | `encomiendas-envio-seguro` | Nombres de contenedores, base de datos local y tags OCI. |
+| **Descripción** | Texto libre | `Sistema de gestión de encomiendas y envíos seguros` | Documentación en `README.md`. |
+| **GitHub Owner** | Nombre de usuario u org (sin `@`) | `ca04073` | Define `CODEOWNERS` y compone `GITHUB_REPOSITORY` (`owner/repo`). |
+| **Puerto del Contenedor** | Entero numérico | `8080` | `EXPOSE` y `ARG CONTAINER_PORT` en `Dockerfile` y red de Compose. |
+| **Puerto del Host Local** | Entero numérico | `8080` | Mapeo de puerto anfitrión (`HOST_PORT`) en `compose.yaml`. |
 
 ### Acciones ejecutadas automáticamente por `init.sh`:
-- Sustitución de variables en `README.md`, `compose.yaml`, `Dockerfile`, `.github/CODEOWNERS` y `.devcontainer/devcontainer.json`.
-- Configuración segura del valor `ARG CONTAINER_PORT=<puerto>` en `Dockerfile`.
-- Generación del archivo `.env` local a partir de `.env.example`.
+- Sustitución de variables en `README.md`, `compose.yaml`, `Dockerfile`, `.env.example`, `.github/CODEOWNERS`, `.devcontainer/devcontainer.json` y archivos modulares de `examples-docs/`.
+- Configuración de `ARG CONTAINER_PORT=<puerto>` en `Dockerfile`.
+- Generación del archivo `.env` local ya interpolado y listo para desarrollo.
 - Activación de hooks locales en `.githooks/` (`core.hooksPath`).
 - Eliminación de `SETUP.md` y autodestrucción de `init.sh`.
 
@@ -72,7 +72,7 @@ Las políticas de seguridad del template no se heredan automáticamente en GitHu
 5. Verifica que el estado de cumplimiento esté en **Active**.
 6. Haz clic en **Save changes**.
 
-> Esto dejará blindada la rama `main` contra borrados accidentales, pushes forzados (`non-fast-forward`) y exigirá la validación completa del pipeline de CI/CD (`Lint & Validation` y `Build OCI Image`).
+> Esto blindará la rama `main` contra borrados accidentales, pushes forzados (`non-fast-forward`) y exigirá la validación del pipeline de CI/CD (`Lint & Validation` y `Build OCI Image`).
 
 ---
 

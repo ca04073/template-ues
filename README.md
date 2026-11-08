@@ -1,17 +1,18 @@
 ---
 proyecto: "{{PROJECT_NAME}}"
 tipo: "Plantilla Base / Repositorio Modelo"
-entorno_principal: "Podman / OCI Containers"
+entorno_principal: "Podman / Docker / OCI Containers"
 arquitectura: "Separación Modular / Staging -> Main"
 estado: "En Desarrollo / Plantilla Lista"
 version: "1.0.0"
-ultima_actualizacion: "2026-10-25"
+ultima_actualizacion: "2026-11-07"
 tags:
   - template
   - devcontainer
   - github-actions
   - ghcr
   - podman
+  - docker
 ---
 
 # 🚀 {{PROJECT_NAME}}
@@ -24,11 +25,11 @@ tags:
 
 ### 🛡️ Estado del Proyecto y Métricas
 
-![GitHub default branch](https://shields.io)
-![Main Protected](https://shields.io)
-![Container Runtime](https://shields.io)
-![Registry](https://shields.io)
-![License](https://shields.io)
+![GitHub default branch](https://img.shields.io/badge/branch-develop-blue)
+![Main Protected](https://img.shields.io/badge/main-protected-green)
+![Container Runtime](https://img.shields.io/badge/runtime-Podman%20%7C%20Docker-blueviolet)
+![Registry](https://img.shields.io/badge/registry-GHCR-blue)
+![License](https://img.shields.io/badge/license-MIT-informational)
 
 ---
 
@@ -37,9 +38,9 @@ tags:
 {{PROJECT_DESCRIPTION}}
 
 Principios del entorno:
-1. **Contenedorización Agnóstica:** Listo para compilar y ejecutarse sin fricción con **Podman** o **Docker** mediante definiciones estándar OCI.
+1. **Contenedorización Agnóstica:** Diseñado para compilar y ejecutarse indistintamente con **Podman** o **Docker Engine** mediante especificaciones estándar OCI.
 2. **Entornos Reproducibles:** Soporte nativo para **Dev Containers** vía `.devcontainer/devcontainer.json` para VS Code o GitHub Codespaces.
-3. **Gestión Ágil y Trazabilidad:** Planificación de requerimientos centralizada en `BACKLOG.md` e historial evolutivo estricto regulado bajo el estándar de `CHANGELOG.md`.
+3. **Gestión Ágil y Trazabilidad:** Planificación de requerimientos centralizada en `BACKLOG.md` e historial evolutivo regulado bajo el estándar de `CHANGELOG.md`.
 
 ---
 
@@ -71,8 +72,8 @@ Principios del entorno:
 ### Reglas de Contribución
 
 - **Commits directos en `main` prohibidos:** Todo cambio debe originarse mediante un Pull Request desde `develop`.
-- **Trazabilidad de tareas:** Cada Pull Request o Issue debe incluir obligatoriamente en su título el identificador de la tarea correspondiente del `BACKLOG.md` (ej. `[ID-001]`).
-- **Aprobación de Code Owners:** El PR debe contar con la firma aprobada de los revisores designados en el archivo `CODEOWNERS`.
+- **Trazabilidad de tareas:** Cada Pull Request o Issue debe incluir obligatoriamente en su título el identificador de la tarea correspondiente de `BACKLOG.md` (ej. `[ID-001]`).
+- **Aprobación de Code Owners:** El PR debe contar con la firma aprobada de los revisores asignados en el archivo `CODEOWNERS`.
 - **CI en Verde:** El pipeline de GitHub Actions debe compilar la imagen y validar el código satisfactoriamente antes de autorizar el merge.
 
 ---
@@ -82,23 +83,32 @@ Principios del entorno:
 ```text
 .
 ├── .devcontainer/
-│   └── devcontainer.json         # Configuración del entorno de desarrollo aislado
+│   └── devcontainer.json            # Configuración del entorno de desarrollo aislado
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md         # Plantilla estructurada para reporte de errores
-│   │   ├── config.yml            # Configuración para deshabilitar issues vacíos
-│   │   └── feature_request.md    # Plantilla estructurada para nuevas propuestas
+│   │   ├── bug_report.md            # Plantilla estructurada para reporte de errores
+│   │   ├── config.yml               # Configuración para deshabilitar issues vacíos
+│   │   └── feature_request.md       # Plantilla estructurada para nuevas propuestas
+│   ├── rulesets/
+│   │   └── main-protection.json     # Reglas exportadas para blindar la rama main
 │   ├── workflows/
-│   │   └── ci.yml                # Pipeline de GitHub Actions (Lint, Build y GHCR)
-│   ├── CODEOWNERS                # Asignación obligatoria de revisores
-│   └── PULL_REQUEST_TEMPLATE.md  # Checklist de verificación para Pull Requests
-├── .env.example                  # Plantilla de variables de entorno públicas
-├── .gitignore                    # Exclusiones de Git
-├── BACKLOG.md                    # Listado priorizado de tareas y estimación en días
-├── CHANGELOG.md                  # Historial detallado de cambios por versión (SemVer)
-├── compose.yaml                  # Orquestación multicontenedor (compatible con Podman)
-├── Dockerfile                    # Receta de construcción OCI del contenedor
-└── README.md                     # Documentación general del proyecto
+│   │   └── ci.yml                   # Pipeline de GitHub Actions (Lint, Build y GHCR)
+│   ├── CODEOWNERS                   # Asignación obligatoria de revisores
+│   └── PULL_REQUEST_TEMPLATE.md     # Checklist de verificación para Pull Requests
+├── .githooks/
+│   └── pre-commit                   # Hook local para validar ramas y commits
+├── examples-docs/                   # Módulos y extensiones opcionales de infraestructura
+│   ├── .env.postgres.example        # Plantilla de variables para PostgreSQL
+│   ├── compose.postgres.yaml        # Servicio modular de base de datos PostgreSQL
+│   └── sql/
+│       └── .gitkeep                 # Carpeta para scripts SQL de inicialización (initdb)
+├── .env.example                     # Plantilla de variables de entorno públicas
+├── .gitignore                       # Exclusiones globales de Git
+├── BACKLOG.md                       # Listado priorizado de tareas y estimación
+├── CHANGELOG.md                     # Historial detallado de cambios por versión (SemVer)
+├── compose.yaml                     # Orquestación base del servicio de aplicación
+├── Dockerfile                       # Receta de construcción OCI del contenedor
+└── README.md                        # Documentación técnica operativa
 ```
 
 ---
@@ -107,53 +117,85 @@ Principios del entorno:
 
 ### 5.1. Requisitos Previos
 
-- **Motor de contenedores:** [Podman](https://podman.io) (recomendado) o Docker Engine / Docker Desktop.
+- **Motor de contenedores:** [Podman](https://podman.io) o [Docker Engine](https://docs.docker.com/engine/).
+- **Compose:** `podman-compose` o Docker Compose v2 (`docker compose`).
 - **Cliente Git:** Versión 2.30+ instalada y configurada.
 
 ### 5.2. Configuración Inicial
 
-1. Clonar el repositorio y entrar en la carpeta del proyecto:
+1. Clonar el repositorio y entrar en el directorio del proyecto:
     
     ```bash
     git clone https://github.com/{{GITHUB_OWNER}}/{{PROJECT_NAME}}.git
     cd {{PROJECT_NAME}}
     ```
     
-2. Preparar el archivo de variables de entorno:
+2. Generar el archivo de variables de entorno local:
     
     ```bash
     cp .env.example .env
     ```
 
-### 5.3. Construcción y Ejecución con Podman / Docker
+---
 
-Compilar la imagen localmente:
+### 5.3. Ejecución del Servicio Base (Solo Aplicación)
+
+Para compilar y levantar el servicio principal de la aplicación:
 
 ```bash
-podman build -t {{PROJECT_NAME}}:local .
+# Con Podman:
+podman compose up -d --build
+
+# Con Docker:
+docker compose up -d --build
 ```
 
-Levantar el entorno con compose:
+Visualizar logs en tiempo real:
 
 ```bash
-podman compose up -d
+# Con Podman:
+podman compose logs -f app
+
+# Con Docker:
+docker compose logs -f app
+```
+
+---
+
+### 5.4. Ejecución con Base de Datos PostgreSQL (Opcional)
+
+Si el proyecto requiere persistencia de datos relacional local:
+
+1. **Añadir variables de entorno:** Copia el contenido de `examples-docs/.env.postgres.example` al final de tu archivo `.env`.
+2. **Levantar ambos servicios orquestados:**
+
+```bash
+# Con Podman:
+podman compose -f compose.yaml -f examples-docs/compose.postgres.yaml up -d --build
+
+# Con Docker:
+docker compose -f compose.yaml -f examples-docs/compose.postgres.yaml up -d --build
 ```
 
 > [!TIP]
-> Si utilizas **Podman** en Linux en modo _rootless_, no necesitas permisos de superusuario (`sudo`) para interactuar con los contenedores o el orquestador.
+> Cualquier script `.sql` ubicado dentro de `examples-docs/sql/` se ejecutará de forma automática en orden alfabético la primera vez que se inicialice el volumen de datos de PostgreSQL.
 
 ---
 
 ## 📦 6. Descarga de Imágenes desde GHCR
 
-Para utilizar directamente los artefactos generados por el pipeline de integración continua:
+Para utilizar directamente los artefactos generados por el pipeline de integración continua sin compilar localmente:
 
 ```bash
-# Versión de staging (rama develop)
-podman pull ghcr.io/{{GITHUB_OWNER}}/{{PROJECT_NAME}}:staging
+# Versión de staging (originada en develop)
+podman pull ghcr.io/{{GITHUB_REPOSITORY}}:staging
+# O con Docker:
+docker pull ghcr.io/{{GITHUB_REPOSITORY}}:staging
 
-# Versión de producción (rama main)
-podman pull ghcr.io/{{GITHUB_OWNER}}/{{PROJECT_NAME}}:latest
+# Versión de producción (originada en main / SemVer)
+podman pull ghcr.io/{{GITHUB_REPOSITORY}}:latest
+# O con Docker:
+docker pull ghcr.io/{{GITHUB_REPOSITORY}}:latest
 ```
 
 ---

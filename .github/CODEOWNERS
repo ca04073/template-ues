@@ -7,42 +7,56 @@
 #
 # Reglas de sintaxis importantes:
 # - El orden de las líneas importa: las reglas del final anulan a las de arriba.
-# - El usuario asignado debe tener permisos de escritura en el repositorio.
+# - Los usuarios o equipos asignados deben tener permisos de escritura.
+# - Las rutas que inician con '/' son relativas a la raíz del repositorio.
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
 # 🚨 REGLA GLOBAL DE GOBERNANZA
 # ------------------------------------------------------------------------------
-# Por defecto, todo cambio en cualquier archivo del repositorio requiere la
-# revisión y aprobación del propietario principal o del equipo de arquitectura.
+# Por defecto, cualquier cambio en archivos no clasificados requiere la revisión
+# y aprobación del propietario principal o del equipo de arquitectura.
 
 *                                               @{{GITHUB_OWNER}}
 
 # ------------------------------------------------------------------------------
 # 🔒 INFRAESTRUCTURA, CONFIGURACIÓN Y PIPELINES (CI/CD)
 # ------------------------------------------------------------------------------
-# Secciones críticas que controlan la compilación OCI y las acciones de automatización.
-# Evita modificaciones accidentales que rompan los pipelines de integración continua.
+# Archivos críticos que controlan la compilación OCI, el runtime y la automatización.
 
 /.github/workflows/                             @{{GITHUB_OWNER}}
+/.devcontainer/                                 @{{GITHUB_OWNER}}
+/.githooks/                                     @{{GITHUB_OWNER}}
 /Dockerfile                                     @{{GITHUB_OWNER}}
+/Containerfile                                  @{{GITHUB_OWNER}}
 /compose.yaml                                   @{{GITHUB_OWNER}}
 
 # ------------------------------------------------------------------------------
-# 📑 GESTIÓN DE CONFIGURACIÓN Y REGLAS DE REPOSITORIO
+# 🗄️ PERSISTENCIA MODULAR Y SCRIPTS DE DATOS
 # ------------------------------------------------------------------------------
-# Archivos que alteran el gobierno de la comunidad, el linteado o el control de acceso.
+# Configuraciones de bases de datos locales, esquemas SQL y variables auxiliares.
+# En repositorios derivados, puede reasignarse a equipos especializados (ej. @org/dba).
+
+/examples-docs/                                 @{{GITHUB_OWNER}}
+/examples-docs/sql/                             @{{GITHUB_OWNER}}
+
+# ------------------------------------------------------------------------------
+# 📑 POLÍTICAS DE GOBERNANZA, REGLAS Y PLANTILLAS
+# ------------------------------------------------------------------------------
+# Archivos que alteran el control de acceso, branch protection o reportes de la comunidad.
 
 /.github/CODEOWNERS                             @{{GITHUB_OWNER}}
+/.github/rulesets/                              @{{GITHUB_OWNER}}
 /.github/PULL_REQUEST_TEMPLATE.md               @{{GITHUB_OWNER}}
 /.github/ISSUE_TEMPLATE/                        @{{GITHUB_OWNER}}
 /.gitignore                                     @{{GITHUB_OWNER}}
+/.dockerignore                                  @{{GITHUB_OWNER}}
+/.editorconfig                                  @{{GITHUB_OWNER}}
 
 # ------------------------------------------------------------------------------
 # 📝 DOCUMENTACIÓN GENERAL DEL PROYECTO
 # ------------------------------------------------------------------------------
-# Si en tu flujo de trabajo cuentas con un equipo de documentación o Technical Writers,
-# puedes cambiar `*@{{GITHUB_OWNER}}` por un equipo específico (ej. `@mi-organizacion/tech-writers`).
+# En proyectos reales, puede delegarse en equipos de redacción técnica (ej. @org/tech-writers).
 
 /README.md                                      @{{GITHUB_OWNER}}
 /BACKLOG.md                                     @{{GITHUB_OWNER}}

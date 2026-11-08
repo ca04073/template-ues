@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    container_name: ${POSTGRES_CONTAINER_NAME:-{{PROJECT_NAME}}-postgres}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-{{PROJECT_NAME}}_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      # Enlaza a HOST_IP (por defecto 127.0.0.1 o IP interna) para acceso seguro
+      - "${HOST_IP:-127.0.0.1}:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-{{PROJECT_NAME}}_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - default
+
+volumes:
+  pgdata:
+    name: ${POSTGRES_VOLUME_NAME:-{{PROJECT_NAME}}_pgdata}

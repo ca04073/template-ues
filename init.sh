@@ -25,7 +25,7 @@ read -rp "GitHub Owner (usuario u org, sin @): " GITHUB_OWNER
 read -rp "Puerto del Contenedor (ej. 8080): " CONTAINER_PORT
 read -rp "Puerto del Host Local (ej. 8080): " HOST_PORT
 
-# Validar que no haya campos vacíos esenciales
+# Validar campos obligatorios
 if [[ -z "$PROJECT_NAME" || -z "$GITHUB_OWNER" ]]; then
   echo -e "\n${RED}ERROR: El nombre del proyecto y el GitHub Owner son obligatorios.${NC}"
   exit 1
@@ -33,6 +33,7 @@ fi
 
 CONTAINER_PORT=${CONTAINER_PORT:-8080}
 HOST_PORT=${HOST_PORT:-8080}
+GITHUB_REPOSITORY="${GITHUB_OWNER}/${PROJECT_NAME}"
 
 echo -e "\n${YELLOW}Aplicando reemplazo de variables...${NC}"
 
@@ -45,26 +46,31 @@ sedi() {
   fi
 }
 
-# Lista de archivos a procesar
+# Lista completa de archivos a procesar (incluyendo raíz, docs y examples-docs)
 TARGET_FILES=(
   "README.md"
+  "BACKLOG.md"
+  "CHANGELOG.md"
   "compose.yaml"
   "Dockerfile"
+  ".env.example"
   ".github/CODEOWNERS"
   ".devcontainer/devcontainer.json"
+  "examples-docs/compose.postgres.yaml"
+  "examples-docs/.env.postgres.example"
 )
 
 # Sustitución de marcadores en archivos existentes
 for file in "${TARGET_FILES[@]}"; do
   if [ -f "$file" ]; then
-    # Marcadores estándar
     sedi "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" "$file"
     sedi "s|{{PROJECT_DESCRIPTION}}|$PROJECT_DESCRIPTION|g" "$file"
     sedi "s|{{GITHUB_OWNER}}|$GITHUB_OWNER|g" "$file"
+    sedi "s|{{GITHUB_REPOSITORY}}|$GITHUB_REPOSITORY|g" "$file"
     sedi "s|{{CONTAINER_PORT}}|$CONTAINER_PORT|g" "$file"
     sedi "s|{{HOST_PORT}}|$HOST_PORT|g" "$file"
 
-    # Reemplazo seguro para ARG CONTAINER_PORT=<valor> en Dockerfile
+    # Reemplazo numérico en Dockerfile o Containerfile
     if [[ "$file" == "Dockerfile" || "$file" == "Containerfile" ]]; then
       sedi -E "s|ARG CONTAINER_PORT=[0-9]+|ARG CONTAINER_PORT=${CONTAINER_PORT}|g" "$file"
     fi
@@ -73,7 +79,7 @@ for file in "${TARGET_FILES[@]}"; do
   fi
 done
 
-# Preparar archivo .env si no existe
+# Preparar archivo .env local a partir del .env.example ya interpolado
 if [ ! -f .env ] && [ -f .env.example ]; then
   cp .env.example .env
   echo -e "  ${GREEN}✓${NC} Archivo .env generado a partir de .env.example"
@@ -97,7 +103,7 @@ if [ -f "SETUP.md" ]; then
   echo -e "  ${GREEN}✓${NC} SETUP.md eliminado (documentación operativa consolidada en README.md)"
 fi
 
-# 4. Mensaje de cierre e instrucciones de protección
+# 4. Mensaje de cierre e instrucciones
 echo -e "\n${BLUE}${BOLD}=====================================================${NC}"
 echo -e "${GREEN}${BOLD}   ✅ INICIALIZACIÓN COMPLETADA CON ÉXITO           ${NC}"
 echo -e "${BLUE}${BOLD}=====================================================${NC}\n"

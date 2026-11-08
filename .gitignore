@@ -11,6 +11,8 @@
 .env
 .env.*
 !.env.example
+!examples-docs/.env.postgres.example
+!examples-docs/.env.*.example
 http-client.private.env.json
 
 # ====================================================================
@@ -23,6 +25,8 @@ http-client.private.env.json
 *.logs
 compose.override.yaml
 docker-compose.override.yml
+*.sql.dump
+*.dump
 
 # ====================================================================
 # 💻 SISTEMAS OPERATIVOS (Windows, Linux, macOS)
