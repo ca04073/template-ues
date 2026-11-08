@@ -1,0 +1,10 @@
+# ====================================================================
+# ⚙️ GOBERNANZA DE ISSUES (config.yml)
+# Ubicación: .github/ISSUE_TEMPLATE/config.yml
+# Propósito: Deshabilitar issues en blanco y dirigir a plantillas
+# ====================================================================
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Documentación y Arquitectura
+    url: https://github.com
+    about: Por favor revisa la documentación del proyecto en README.md antes de abrir una solicitud.

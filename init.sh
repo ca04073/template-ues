@@ -34,6 +34,7 @@ fi
 CONTAINER_PORT=${CONTAINER_PORT:-8080}
 HOST_PORT=${HOST_PORT:-8080}
 GITHUB_REPOSITORY="${GITHUB_OWNER}/${PROJECT_NAME}"
+SAFE_PROJECT_DESCRIPTION=$(printf '%s\n' "$PROJECT_DESCRIPTION" | sed -e 's/[\/&|]/\\&/g')
 
 echo -e "\n${YELLOW}Aplicando reemplazo de variables...${NC}"
 
@@ -64,7 +65,7 @@ TARGET_FILES=(
 for file in "${TARGET_FILES[@]}"; do
   if [ -f "$file" ]; then
     sedi "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" "$file"
-    sedi "s|{{PROJECT_DESCRIPTION}}|$PROJECT_DESCRIPTION|g" "$file"
+    sedi "s|{{PROJECT_DESCRIPTION}}|$SAFE_PROJECT_DESCRIPTION|g" "$file"
     sedi "s|{{GITHUB_OWNER}}|$GITHUB_OWNER|g" "$file"
     sedi "s|{{GITHUB_REPOSITORY}}|$GITHUB_REPOSITORY|g" "$file"
     sedi "s|{{CONTAINER_PORT}}|$CONTAINER_PORT|g" "$file"
@@ -72,7 +73,7 @@ for file in "${TARGET_FILES[@]}"; do
 
     # Reemplazo numérico en Dockerfile o Containerfile
     if [[ "$file" == "Dockerfile" || "$file" == "Containerfile" ]]; then
-      sedi -E "s|ARG CONTAINER_PORT=[0-9]+|ARG CONTAINER_PORT=${CONTAINER_PORT}|g" "$file"
+      sedi "s|ARG CONTAINER_PORT=[0-9][0-9]*|ARG CONTAINER_PORT=${CONTAINER_PORT}|g" "$file"
     fi
 
     echo -e "  ${GREEN}✓${NC} $file actualizado"

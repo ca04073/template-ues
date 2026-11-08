@@ -15,15 +15,22 @@ echo -e "${YELLOW}🔍 [Git Hook] Ejecutando validaciones previas al commit...${
 # ====================================================================
 # 1. PREVENCIÓN DE ARCHIVOS CONFIDENCIALES (.env)
 # ====================================================================
+# Bloquear variantes de .env (excluyendo plantillas públicas .example)
+if git diff --cached --name-only | grep -E "(^|/)\.env(\.[^/]+)?$" | grep -v "\.example$" > /dev/null 2>&1; then
+  SENSITIVE_ENV=$(git diff --cached --name-only | grep -E "(^|/)\.env(\.[^/]+)?$" | grep -v "\.example$" | head -n 1)
+  echo -e "${RED}❌ ERROR: Intento de commitear archivo de entorno confidencial: ${SENSITIVE_ENV}${NC}"
+  echo -e "${RED}Remuévelo del stage con: git reset HEAD ${SENSITIVE_ENV}${NC}"
+  exit 1
+fi
+
 FORBIDDEN_FILES=(
-  ".env"
   "http-client.private.env.json"
   "id_rsa"
   "id_ed25519"
 )
 
 for file in "${FORBIDDEN_FILES[@]}"; do
-  if git diff --cached --name-only | grep -E "(^|/)${file}$" > /dev/null; then
+  if git diff --cached --name-only | grep -E "(^|/)${file}$" > /dev/null 2>&1; then
     echo -e "${RED}❌ ERROR: Intento de commitear archivo sensible prohibido: ${file}${NC}"
     echo -e "${RED}Remuévelo del stage con: git reset HEAD ${file}${NC}"
     exit 1

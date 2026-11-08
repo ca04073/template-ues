@@ -1,7 +1,7 @@
 FROM alpine:3.20
 
 # Metadatos del contenedor
-LABEL maintainer="manager-dev"
+LABEL maintainer="{{GITHUB_OWNER}}"
 LABEL org.opencontainers.image.description="Baseline container image template"
 
 # Utilidades mínimas esenciales

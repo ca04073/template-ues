@@ -1,3 +1,7 @@
+# ====================================================================
+# 🐳 COMPOSE: Orquestación del Servicio Principal de Aplicación
+# Ubicación: compose.yaml
+# ====================================================================
 services:
   app:
     image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-{{PROJECT_NAME}}}:${IMAGE_TAG:-staging}

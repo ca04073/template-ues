@@ -1,3 +1,8 @@
+# ====================================================================
+# 🗄️ COMPOSE MODULAR: Servicio de Persistencia PostgreSQL
+# Ubicación: examples-docs/compose.postgres.yaml
+# Uso: podman/docker compose -f compose.yaml -f examples-docs/compose.postgres.yaml up -d
+# ====================================================================
 services:
   postgres:
     image: postgres:${POSTGRES_VERSION:-16-alpine}
@@ -13,6 +18,7 @@ services:
       - "${HOST_IP:-127.0.0.1}:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./examples-docs/sql:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-{{PROJECT_NAME}}_db}"]
       interval: 5s

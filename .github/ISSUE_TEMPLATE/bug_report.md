@@ -25,5 +25,9 @@ Una descripción clara de lo que debería haber sucedido en un flujo correcto.
 - **Rama/Versión afectada:** [ej. develop, v1.0.0]
 
 ## 📸 Capturas de Pantalla / Logs de Consola
-Si es posible, añade capturas de pantalla o copia los logs de salida del contenedor para ayudar a diagnosticar el problema.
+<!-- Si es posible, añade capturas de pantalla o copia los logs de salida del contenedor -->
+
+## 📌 Contexto Adicional y Trazabilidad
+- **Vinculado al Backlog:** [ID-XXXX]
+- **Referencias adicionales:** Logs de error o dependencias asociadas.
 
